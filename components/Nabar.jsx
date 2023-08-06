@@ -4,16 +4,17 @@ import { useEffect, useState } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import Image from "next/image";
 const Nabar = () => {
-  const isUserLoggedIn = true;
+  const { data: session } = useSession();
   const [providers, setProviders] = useState(null);
   const [dropDown, setDropdown] = useState(false);
   useEffect(() => {
-    const setProviders = async () => {
+    const setUpProviders = async () => {
       const response = await getProviders();
       setProviders(response);
 
-      setProviders();
+     
     };
+    setUpProviders();
   }, []);
   return (
     <div>
@@ -21,9 +22,9 @@ const Nabar = () => {
         <Link href="/">
           <h4 className="text-[20px] font-bold uppercase">LOGO</h4>
         </Link>
-
+   
         <div className="sm:flex hidden">
-          {isUserLoggedIn ? (
+          {session?.user ? (
             <div className="flex items-center  gap-3">
               <Link href="/create-post">
                 <button className="px-6 py-3 bg-white text-black rounded">
@@ -48,9 +49,9 @@ const Nabar = () => {
               </Link>
             </div>
           ) : (
-            <div>
+            <>
               {providers &&
-                Object.values(providers).map((provider) => {
+                Object.values(providers).map((provider) => (
                   <button
                     type="button"
                     key={provider.name}
@@ -58,13 +59,13 @@ const Nabar = () => {
                     className="px-6 py-3 bg-white text-black rounded"
                   >
                     Sign In
-                  </button>;
-                })}
-            </div>
+                  </button>
+                ))}
+            </>
           )}
         </div>
         <div className="sm:hidden flex">
-          {isUserLoggedIn ? (
+          {session?.user ? (
             <div className=" relative ">
               <div>
                 <Image
@@ -108,9 +109,9 @@ const Nabar = () => {
               </div>
             </div>
           ) : (
-            <div>
-              {providers &&
-                Object.values(providers).map((provider) => {
+            <>
+               {providers &&
+                Object.values(providers).map((provider) => (
                   <button
                     type="button"
                     key={provider.name}
@@ -118,9 +119,11 @@ const Nabar = () => {
                     className="px-6 py-3 bg-white text-black rounded"
                   >
                     Sign In
-                  </button>;
-                })}
-            </div>
+                  </button>
+                 
+                ))}
+                
+            </>
           )}
         </div>
       </div>
